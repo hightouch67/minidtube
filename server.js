@@ -101,7 +101,7 @@ function getRobotHTML(cb) {
 }
 
 function getprojectHTML(author, permlink, cb) {
-    lightrpc.send('get_state', [`/@${author}/${permlink}`], function (err, result) {
+    lightrpc.send('get_state', [`https://fundition.io/#!/@${author}/${permlink}`], function (err, result) {
         if (err) {
             cb(err)
             return
