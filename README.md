@@ -1,2 +1,2 @@
-# minidtube
-DTube for robots
+# minifundition (from minidtube)
+Fundition for robots
