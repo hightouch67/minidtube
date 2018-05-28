@@ -21,9 +21,9 @@ let layouts = {}
 
 app.use('/images', express.static(path.join(__dirname, 'http://www.fundition.io/images/')))
 app.use('/favicon.ico', express.static(path.join(__dirname, 'http://www.fundition.io/images/fundition.png')))
-app.get('*', function (req, res, next) {
+app.get('https://fundition.io/*', function (req, res, next) {
     var isRobot = getRobotName(req.headers['user-agent'])
-
+    console.log(req,res,next)
     // parsing the query
     var reqPath = null
     if (req.query._escaped_fragment_ && req.query._escaped_fragment_.length > 0)
@@ -31,7 +31,7 @@ app.get('*', function (req, res, next) {
     else
         reqPath = req.path
 
-    if (reqPath.startsWith('/sockjs/info')) {
+    if (reqPath.startsWith('https://fundition.io/sockjs/info')) {
         res.send('{}')
         return;
     }
