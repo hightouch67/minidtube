@@ -7,9 +7,7 @@ const htmlEncode = require('htmlencode').htmlEncode;
 const app = express()
 app.use(cors())
 const port = process.env.PORT || 3000
-const jsonfile = require('jsonfile')
 const file = 'robots.json'
-const crawlers = jsonfile.readFileSync(file)
 // currently whitelisting a few robots
 // const allowedRobots = ['facebookexternalhit', 'Discordbot', 'Slackbot'
 //     , 'bingbot', 'Twitterbot']
@@ -169,12 +167,3 @@ function parseVideo(video, isComment) {
     return newVideo;
 }
 
-function getRobotName(userAgent) {
-    console.log(userAgent)
-    for (let i = 0; i < crawlers.length; i++) {
-        var re = new RegExp(crawlers[i].pattern);
-        var isRobot = re.test(userAgent)
-        if (isRobot) return crawlers[i].pattern;
-    }
-    return;
-}
