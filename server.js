@@ -31,7 +31,7 @@ app.get('*', function (req, res, next) {
     else
         reqPath = req.path
 
-    if (reqPath.startsWith('https://fundition.io/sockjs/info')) {
+    if (reqPath.startsWith('/sockjs/info')) {
         res.send('{}')
         return;
     }
@@ -101,7 +101,7 @@ function getRobotHTML(cb) {
 }
 
 function getprojectHTML(author, permlink, cb) {
-    lightrpc.send('get_state', [`https://fundition.io/#!/@${author}/${permlink}`], function (err, result) {
+    lightrpc.send('get_state', [`/@${author}/${permlink}`], function (err, result) {
         if (err) {
             cb(err)
             return
@@ -170,6 +170,7 @@ function parseVideo(video, isComment) {
 }
 
 function getRobotName(userAgent) {
+    console.log(userAgent)
     for (let i = 0; i < crawlers.length; i++) {
         var re = new RegExp(crawlers[i].pattern);
         var isRobot = re.test(userAgent)
