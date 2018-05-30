@@ -19,8 +19,8 @@ const lightrpc = createClient('https://api.steemit.com');
 
 let layouts = {}
 
-app.use('/images', express.static(path.join(__dirname, 'http://www.fundition.io/images/')))
-app.use('/favicon.ico', express.static(path.join(__dirname, 'http://www.fundition.io/images/fundition.png')))
+// app.use('/images', express.static(path.join(__dirname, 'http://www.fundition.io/images/')))
+// app.use('/favicon.ico', express.static(path.join(__dirname, 'http://www.fundition.io/images/fundition.png')))
 app.get('https://fundition.io/*', function (req, res, next) {
     var isRobot = getRobotName(req.headers['user-agent'])
     console.log(req,res,next)
