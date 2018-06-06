@@ -85,10 +85,9 @@ function getProjectHTML(author, permlink, cb) {
             cb('Weird error')
             return;
         }
-
+        console.log(project)
         var html = ''
-        html += '<video src="https://ipfs.io/ipfs/'+hashVideo+'" poster="https://ipfs.io/ipfs/'+video.info.snaphash+'" controls></video><br />'
-        html += '<h1>'+video.info.title+'</h1>'
+        html += '<h1>'+project.basics.title+'</h1>'
         html += '<h2>Author: '+video.info.author+'</h2>'
         html += '<h2>Date: '+video.created.split('T')[0]+'</h2>'
         html += '<p><strong>Description: </strong>'+video.content.description.replace(/(?:\r\n|\r|\n)/g, '<br />')+'</p>'
@@ -130,6 +129,5 @@ function parseProject(project, isComment) {
     newProject.created = project.created
     newProject.net_rshares = project.net_rshares
     newProject.reblogged_by = project.reblogged_by
-    console.log(newProject)
     return newProject;
 }
