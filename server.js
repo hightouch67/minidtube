@@ -135,16 +135,16 @@ function parseProject(project, isComment) {
         console.log(e)
     }
     if (!newProject) newProject = {}
-    newProject.active_votes = video.active_votes
-    newProject.author = video.author
-    newProject.body = video.body
-    newProject.total_payout_value = video.total_payout_value
-    newProject.curator_payout_value = video.curator_payout_value
-    newProject.pending_payout_value = video.pending_payout_value
-    newProject.permlink = video.permlink
-    newProject.created = video.created
-    newProject.net_rshares = video.net_rshares
-    newProject.reblogged_by = video.reblogged_by
+    newProject.active_votes = project.active_votes
+    newProject.author = project.author
+    newProject.body = project.body
+    newProject.total_payout_value = project.total_payout_value
+    newProject.curator_payout_value = project.curator_payout_value
+    newProject.pending_payout_value = project.pending_payout_value
+    newProject.permlink = project.permlink
+    newProject.created = project.created
+    newProject.net_rshares = project.net_rshares
+    newProject.reblogged_by = project.reblogged_by
     console.log(newProject)
     return newProject;
 }
