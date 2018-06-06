@@ -74,7 +74,6 @@ function getprojectHTML(author, permlink, cb) {
         console.log(result)
         var project = result
         var html = ''
-        html += '<video src="https://ipfs.io/ipfs/' + hashVideo + '" poster="https://ipfs.io/ipfs/' + video.info.snaphash + '" controls></video><br />'
         html += '<h1>' + project.json_metadata.basics.title + '</h1>'
         html += '<h2>Author: ' +  project.json_metadata.basics.title + '</h2>'
         html += '<h2>Date: ' + project.created.split('T')[0] + '</h2>'
