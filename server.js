@@ -141,7 +141,7 @@ function getVideoHTML(author, permlink, cb) {
 
 function parseVideo(video, isComment) {
     try {
-      var newVideo = JSON.parse(video.json_metadata).video
+      var newVideo = JSON.parse(video.json_metadata)
     } catch(e) {
         console.log(e)
     }
