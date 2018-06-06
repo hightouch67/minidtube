@@ -7,19 +7,19 @@ const htmlEncode = require('htmlencode').htmlEncode;
 const app = express()
 app.use(cors())
 const port = process.env.PORT || 3000
-const file = 'robots.json'
-// currently whitelisting a few robots
-// const allowedRobots = ['facebookexternalhit', 'Discordbot', 'Slackbot'
-//     , 'bingbot', 'Twitterbot']
+const jsonfile = require('jsonfile')
+const crawlers = jsonfile.readFileSync(file)
 const rootDomain = 'https://fundition.io'
 
 const lightrpc = createClient('https://api.steemit.com');
 
 let layouts = {}
+
 app.use('/files', express.static(path.join(__dirname, 'public/files')))
 app.use('/favicon.ico', express.static(path.join(__dirname, 'public/files/fnd.png')))
-app.get('*', function (req, res, next) {
-    //var isRobot = getRobotName(req.headers['user-agent'])
+app.get('*', function(req, res, next) {
+    var isRobot = getRobotName(req.headers['user-agent'])
+
     // parsing the query
     var reqPath = null
     if (req.query._escaped_fragment_ && req.query._escaped_fragment_.length > 0)
@@ -31,27 +31,55 @@ app.get('*', function (req, res, next) {
         res.send('{}')
         return;
     }
-    getprojectHTML(
-        reqPath.split('/')[1],
+
+    if (isRobot)
+        console.log(isRobot, 'GET', req.path, req.query)
+    
+    if (isRobot && reqPath.startsWith('/v/')) {
+        // DIRTY ROBOTS
+        getVideoHTML(
         reqPath.split('/')[2],
-        function (err, contentHTML, pageTitle, description, url) {
+        reqPath.split('/')[3],
+        function(err, contentHTML, pageTitle, description, url, snap, urlvideo, duration, embedUrl) {
             if (error(err, next)) return
-            getRobotHTML(function (err, baseHTML) {
+            getRobotHTML(function(err, baseHTML) {
                 if (error(err, next)) return
                 baseHTML = baseHTML.replace(/@@CONTENT@@/g, contentHTML)
                 baseHTML = baseHTML.replace(/@@TITLE@@/g, htmlEncode(pageTitle))
                 baseHTML = baseHTML.replace(/@@DESCRIPTION@@/g, htmlEncode(description))
                 baseHTML = baseHTML.replace(/@@URL@@/g, htmlEncode(url))
-                baseHTML = baseHTML.replace(/@@URLNOHASH@@/g, htmlEncode(url).replace('/#!', ''))
+                baseHTML = baseHTML.replace(/@@URLNOHASH@@/g, htmlEncode(url).replace('/#!',''))
                 // facebook minimum snap is 200x200 otherwise useless
-
+                baseHTML = baseHTML.replace(/@@SNAP@@/g, htmlEncode(snap))
+                baseHTML = baseHTML.replace(/@@VIDEO@@/g, htmlEncode(urlvideo))
+                baseHTML = baseHTML.replace(/@@EMBEDURL@@/g, htmlEncode(embedUrl))
+                if (duration) {
+                    var durationHTML = '<meta property="og:video:duration" content="@@VIDEODURATION@@" />'
+                    durationHTML = durationHTML.replace(/@@VIDEODURATION@@/g, htmlEncode(""+Math.round(duration)))
+                    baseHTML = baseHTML.replace(/@@METAVIDEODURATION@@/g, durationHTML)
+                } else {
+                    baseHTML = baseHTML.replace(/@@METAVIDEODURATION@@/g, '')
+                }
+                
                 res.send(baseHTML)
             })
         })
-
+    } else {
+        // HUMAN BROWSER
+        // AND DISALLOWED ROBOTS
+        if (reqPath == '/') {
+            getHumanHTML(function(err, humanHTML) {
+                if (error(err, next)) return
+                res.send(humanHTML)
+            })
+        } else {
+            res.redirect('/#!'+reqPath);
+        }
+    }
+    
 })
 
-app.listen(port, () => console.log('minidtube listening on port ' + port))
+app.listen(port, () => console.log('minidtube listening on port '+port))
 
 function error(err, next) {
     if (err) {
@@ -62,48 +90,117 @@ function error(err, next) {
     return false
 }
 
-function getprojectHTML(author, permlink, cb) {
-    lightrpc.send('get_state', [`/${author}/${permlink}`], function (err, result) {
+function getRobotHTML(cb) {
+    if (layouts.robot) {
+        cb(null, layouts.robot)
+        return
+    }
+    else {
+        fs.readFile(path.join(__dirname,"static","robots.html"), 'utf8', function (err,data) {
+            if (err) {
+                cb(err)
+                return
+            } else {
+                layouts.robot = data
+                cb(null, data)
+                return
+            }
+        });
+    }
+}
+
+function getHumanHTML(cb) {
+    if (layouts.human) {
+        cb(null, layouts.human)
+        return
+    } else {
+        fs.readFile(path.join(__dirname,"static","production","index.html"), 'utf8', function (err,data) {
+            if (err) {
+                cb(err)
+                return
+            } else {
+                layouts.human = data
+                cb(null, data)
+                return
+            }
+        });
+    }
+}
+
+function getVideoHTML(author, permlink, cb) {
+    lightrpc.send('get_state', [`/myfundition/@${author}/${permlink}`], function(err, result) {
         if (err) {
             cb(err)
             return
         }
-        var project = parseProject(result.content[author+'/'+permlink])
-        if (!project.content || !project.info) {
+        //console.log(result.content[author+'/'+permlink])
+        var video = parseVideo(result.content[author+'/'+permlink])
+        if (!video.content || !video.info) {
             cb('Weird error')
             return;
         }
-        console.log(result)
+        var hashVideo = video.content.video480hash ? video.content.video480hash : video.content.videohash
+        var upvotedBy = []
+        var downvotedBy = []
+        for (let i = 0; i < video.active_votes.length; i++) {
+            if (parseInt(video.active_votes[i].rshares) > 0)
+                upvotedBy.push(video.active_votes[i].voter);    
+            if (parseInt(video.active_votes[i].rshares) < 0)
+                downvotedBy.push(video.active_votes[i].voter);         
+        }
+
         var html = ''
-        html += '<h1>' + project.title + '</h1>'
-        html += '<h2>Author: ' +  project.title + '</h2>'
-        html += '<h2>Date: ' + project.created +'</h2>'
-        html += '<p><strong>Description: </strong>' + project.body.replace(/(?:\r\n|\r|\n)/g, '<br />') + '</p>'
-        var url = rootDomain + '/#!/' + project.author + '/' + project.permlink
-        console.log(html)
-        var description = project.body.replace(/(?:\r\n|\r|\n)/g, ' ').substr(0, 300)
-        cb(null, html, project.title, project.body, url)
+        html += '<video src="https://ipfs.io/ipfs/'+hashVideo+'" poster="https://ipfs.io/ipfs/'+video.info.snaphash+'" controls></video><br />'
+        html += '<h1>'+video.info.title+'</h1>'
+        html += '<h2>Author: '+video.info.author+'</h2>'
+        html += '<h2>Date: '+video.created.split('T')[0]+'</h2>'
+        html += '<p><strong>Description: </strong>'+video.content.description.replace(/(?:\r\n|\r|\n)/g, '<br />')+'</p>'
+        if (upvotedBy.length > 0) {
+            html += '<p><strong>Upvoted by: </strong>'
+            html += upvotedBy.join(', ')
+            html += '</p>'
+        }
+        if (downvotedBy.length > 0) {
+            html += '<p><strong>Downvoted by: </strong>'
+            html += downvotedBy.join(', ')
+            html += '</p>'
+        }
+        
+        var url = rootDomain+'/#!/'+video.info.author+'/'+video.info.permlink
+        var snap = 'https://ipfs.io/ipfs/'+video.info.snaphash
+        var urlVideo = 'https://ipfs.io/ipfs/'+hashVideo
+        var embedUrl = 'https://emb.d.tube/#!/'+video.info.author+'/'+video.info.permlink+'/true'
+        var duration = video.info.duration || null
+        var description = video.content.description.replace(/(?:\r\n|\r|\n)/g, ' ').substr(0, 300)
+        cb(null, html, video.info.title, description, url, snap, urlVideo, duration, embedUrl)
     })
 }
 
-function parseProject(project, isComment) {
+function parseVideo(video, isComment) {
     try {
-      var newproject = JSON.parse(project.json_metadata)
+      var newVideo = JSON.parse(video.json_metadata).video
     } catch(e) {
         console.log(e)
     }
-    console.log(project)
-        console.log("new"+ newproject)
-    if (!newproject) newproject = {}
-    newproject.active_votes = project.active_votes
-    newproject.author = project.author
-    newproject.body = project.body
-    newproject.total_payout_value = project.total_payout_value
-    newproject.curator_payout_value = project.curator_payout_value
-    newproject.pending_payout_value = project.pending_payout_value
-    newproject.permlink = project.permlink
-    newproject.created = project.created
-    newproject.net_rshares = project.net_rshares
-    newproject.reblogged_by = project.reblogged_by
-    return newproject;
+    if (!newVideo) newVideo = {}
+    newVideo.active_votes = video.active_votes
+    newVideo.author = video.author
+    newVideo.body = video.body
+    newVideo.total_payout_value = video.total_payout_value
+    newVideo.curator_payout_value = video.curator_payout_value
+    newVideo.pending_payout_value = video.pending_payout_value
+    newVideo.permlink = video.permlink
+    newVideo.created = video.created
+    newVideo.net_rshares = video.net_rshares
+    newVideo.reblogged_by = video.reblogged_by
+    return newVideo;
+}
+
+function getRobotName(userAgent) {
+    for (let i = 0; i < crawlers.length; i++) {
+        var re = new RegExp(crawlers[i].pattern);
+        var isRobot = re.test(userAgent)
+        if (isRobot) return crawlers[i].pattern;
+    }
+    return;
 }
