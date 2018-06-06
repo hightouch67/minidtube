@@ -82,65 +82,17 @@ function getprojectHTML(author, permlink, cb) {
             return
         }
         console.log(result)
-        var video = parseVideo(result.content[author + '/' + permlink])
-        if (!video.content || !video.info) {
-            cb('Weird error')
-            return;
-        }
-        var hashVideo = video.content.video480hash ? video.content.video480hash : video.content.videohash
-        var upvotedBy = []
-        var downvotedBy = []
-        for (let i = 0; i < video.active_votes.length; i++) {
-            if (parseInt(video.active_votes[i].rshares) > 0)
-                upvotedBy.push(video.active_votes[i].voter);
-            if (parseInt(video.active_votes[i].rshares) < 0)
-                downvotedBy.push(video.active_votes[i].voter);
-        }
-
+        var project = result
         var html = ''
         html += '<video src="https://ipfs.io/ipfs/' + hashVideo + '" poster="https://ipfs.io/ipfs/' + video.info.snaphash + '" controls></video><br />'
-        html += '<h1>' + video.info.title + '</h1>'
-        html += '<h2>Author: ' + video.info.author + '</h2>'
-        html += '<h2>Date: ' + video.created.split('T')[0] + '</h2>'
-        html += '<p><strong>Description: </strong>' + video.content.description.replace(/(?:\r\n|\r|\n)/g, '<br />') + '</p>'
-        if (upvotedBy.length > 0) {
-            html += '<p><strong>Upvoted by: </strong>'
-            html += upvotedBy.join(', ')
-            html += '</p>'
-        }
-        if (downvotedBy.length > 0) {
-            html += '<p><strong>Downvoted by: </strong>'
-            html += downvotedBy.join(', ')
-            html += '</p>'
-        }
-
-        var url = rootDomain + '/#!/' + video.info.author + '/' + video.info.permlink
-        var snap = 'https://ipfs.io/ipfs/' + video.info.snaphash
-        var urlVideo = 'https://ipfs.io/ipfs/' + hashVideo
-        var embedUrl = 'https://emb.d.tube/#!/' + video.info.author + '/' + video.info.permlink + '/true'
-        var duration = video.info.duration || null
-        var description = video.content.description.replace(/(?:\r\n|\r|\n)/g, ' ').substr(0, 300)
-        cb(null, html, video.info.title, description, url, snap, urlVideo, duration, embedUrl)
+        html += '<h1>' + project.json_metadata.basics.title + '</h1>'
+        html += '<h2>Author: ' +  project.json_metadata.basics.title + '</h2>'
+        html += '<h2>Date: ' + project.created.split('T')[0] + '</h2>'
+        html += '<p><strong>Description: </strong>' + project.json_metadata.basics.description.replace(/(?:\r\n|\r|\n)/g, '<br />') + '</p>'
+        var url = rootDomain + '/#!/' + project.author + '/' + project.permlink
+      
+        var description = project.json_metadata.basics.description.replace(/(?:\r\n|\r|\n)/g, ' ').substr(0, 300)
+        cb(null, html, project.title, description, url)
     })
-}
-
-function parseVideo(video, isComment) {
-    try {
-        var newVideo = JSON.parse(video.json_metadata).video
-    } catch (e) {
-        console.log(e)
-    }
-    if (!newVideo) newVideo = {}
-    newVideo.active_votes = video.active_votes
-    newVideo.author = video.author
-    newVideo.body = video.body
-    newVideo.total_payout_value = video.total_payout_value
-    newVideo.curator_payout_value = video.curator_payout_value
-    newVideo.pending_payout_value = video.pending_payout_value
-    newVideo.permlink = video.permlink
-    newVideo.created = video.created
-    newVideo.net_rshares = video.net_rshares
-    newVideo.reblogged_by = video.reblogged_by
-    return newVideo;
 }
 
