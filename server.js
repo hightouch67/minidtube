@@ -94,9 +94,6 @@ function getVideoHTML(author, permlink, cb) {
             return
         }
         author = author.replace('@','')
-                console.log(result.content[author+'/'+permlink])
-                console.log(result.content)
-        console.log(result.content)
         var video = parseVideo(result.content[author+'/'+permlink])
         if (!video.content || !video.info) {
             cb('Weird error')
