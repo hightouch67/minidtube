@@ -88,26 +88,13 @@ function getProjectHTML(author, permlink, cb) {
         console.log(project)
         var html = ''
         html += '<h1>'+project.basics.title+'</h1>'
-        html += '<h2>Author: '+video.info.author+'</h2>'
-        html += '<h2>Date: '+video.created.split('T')[0]+'</h2>'
-        html += '<p><strong>Description: </strong>'+video.content.description.replace(/(?:\r\n|\r|\n)/g, '<br />')+'</p>'
-        if (upvotedBy.length > 0) {
-            html += '<p><strong>Upvoted by: </strong>'
-            html += upvotedBy.join(', ')
-            html += '</p>'
-        }
-        if (downvotedBy.length > 0) {
-            html += '<p><strong>Downvoted by: </strong>'
-            html += downvotedBy.join(', ')
-            html += '</p>'
-        }
-        
-        var url = rootDomain+'/#!/'+video.info.author+'/'+video.info.permlink
-        var snap = 'https://ipfs.io/ipfs/'+video.info.snaphash
-        var urlVideo = 'https://ipfs.io/ipfs/'+hashVideo
-        var embedUrl = 'https://emb.d.tube/#!/'+video.info.author+'/'+video.info.permlink+'/true'
-        var duration = video.info.duration || null
-        var description = video.content.description.replace(/(?:\r\n|\r|\n)/g, ' ').substr(0, 300)
+        html += '<h2>Author: '+project.author+'</h2>'
+        html += '<h2>Date: '+project.created.split('T')[0]+'</h2>'
+        html += '<p><strong>Description: </strong>'+project.basics.description.replace(/(?:\r\n|\r|\n)/g, '<br />')+'</p>'
+
+        var url = rootDomain+'/#!/'+project.author+'/'+project.permlink
+        var snap = 'https://ipfs.io/ipfs/'+project.body
+        var description = project.basics.description.replace(/(?:\r\n|\r|\n)/g, ' ').substr(0, 300)
         cb(null, html, video.info.title, description, url, snap)
     })
 }
