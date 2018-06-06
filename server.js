@@ -5,6 +5,8 @@ const path = require('path')
 const { createClient } = require('lightrpc');
 const htmlEncode = require('htmlencode').htmlEncode;
 const app = express()
+const jsonfile = require('jsonfile')
+const file = 'robots.json'
 app.use(cors())
 const port = process.env.PORT || 3000
 const jsonfile = require('jsonfile')
