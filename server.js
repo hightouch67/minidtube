@@ -114,7 +114,7 @@ function getprojectHTML(author, permlink, cb) {
             html += '</p>'
         }
 
-        var url = rootDomain + '/#!/v/' + video.info.author + '/' + video.info.permlink
+        var url = rootDomain + '/#!/' + video.info.author + '/' + video.info.permlink
         var snap = 'https://ipfs.io/ipfs/' + video.info.snaphash
         var urlVideo = 'https://ipfs.io/ipfs/' + hashVideo
         var embedUrl = 'https://emb.d.tube/#!/' + video.info.author + '/' + video.info.permlink + '/true'
