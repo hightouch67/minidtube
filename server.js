@@ -21,7 +21,7 @@ app.use('/files', express.static(path.join(__dirname, 'public/files')))
 app.use('/favicon.ico', express.static(path.join(__dirname, 'public/files/fnd.png')))
 app.get('*', function (req, res, next) {
     //var isRobot = getRobotName(req.headers['user-agent'])
-    console.log(req,res,next)
+    console.log("St" +req,res,next)
     // parsing the query
     var reqPath = null
     if (req.query._escaped_fragment_ && req.query._escaped_fragment_.length > 0)
@@ -33,7 +33,7 @@ app.get('*', function (req, res, next) {
         res.send('{}')
         return;
     }
-    console.log(reqPath)
+    console.log("PAAAAath" + reqPath)
     getprojectHTML(
         reqPath.split('/')[0],
         reqPath.split('/')[1],
