@@ -60,11 +60,6 @@ function error(err, next) {
 }
 
 function getRobotHTML(cb) {
-    if (layouts.robot) {
-        cb(null, layouts.robot)
-        return
-    }
-    else {
         fs.readFile(path.join(__dirname,"static","robots.html"), 'utf8', function (err,data) {
             if (err) {
                 cb(err)
@@ -75,7 +70,7 @@ function getRobotHTML(cb) {
                 return
             }
         });
-    }
+    
 }
 
 function getProjectHTML(author, permlink, cb) {
@@ -86,18 +81,9 @@ function getProjectHTML(author, permlink, cb) {
         }
         author = author.replace('@','')
         var project = parseProject(result.content[author+'/'+permlink])
-        if (!project.title || !project.description) {
+        if (!project.body) {
             cb('Weird error')
             return;
-        }
-        var hashVideo = video.content.video480hash ? video.content.video480hash : video.content.videohash
-        var upvotedBy = []
-        var downvotedBy = []
-        for (let i = 0; i < video.active_votes.length; i++) {
-            if (parseInt(video.active_votes[i].rshares) > 0)
-                upvotedBy.push(video.active_votes[i].voter);    
-            if (parseInt(video.active_votes[i].rshares) < 0)
-                downvotedBy.push(video.active_votes[i].voter);         
         }
 
         var html = ''
@@ -123,7 +109,7 @@ function getProjectHTML(author, permlink, cb) {
         var embedUrl = 'https://emb.d.tube/#!/'+video.info.author+'/'+video.info.permlink+'/true'
         var duration = video.info.duration || null
         var description = video.content.description.replace(/(?:\r\n|\r|\n)/g, ' ').substr(0, 300)
-        cb(null, html, video.info.title, description, url, snap, urlVideo, duration, embedUrl)
+        cb(null, html, video.info.title, description, url, snap)
     })
 }
 
