@@ -33,10 +33,6 @@ app.get('*', function (req, res, next) {
         res.send('{}')
         return;
     }
-
-    if (isRobot)
-        console.log(isRobot, 'GET', req.path, req.query)
-    // DIRTY ROBOTS
     console.log(reqPath)
     getprojectHTML(
         reqPath.split('/')[2],
@@ -77,25 +73,6 @@ function error(err, next) {
         return true
     }
     return false
-}
-
-function getRobotHTML(cb) {
-    if (layouts.robot) {
-        cb(null, layouts.robot)
-        return
-    }
-    else {
-        fs.readFile(path.join(__dirname, "static", "robots.html"), 'utf8', function (err, data) {
-            if (err) {
-                cb(err)
-                return
-            } else {
-                layouts.robot = data
-                cb(null, data)
-                return
-            }
-        });
-    }
 }
 
 function getprojectHTML(author, permlink, cb) {
