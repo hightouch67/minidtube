@@ -88,7 +88,7 @@ function getRobotHTML(cb) {
 }
 
 function getVideoHTML(author, permlink, cb) {
-    lightrpc.send('get_state', [`/myfundition/${author}/${permlink}`], function(err, result) {
+    lightrpc.send('get_state', [`/${author}/${permlink}`], function(err, result) {
         if (err) {
             cb(err)
             return
