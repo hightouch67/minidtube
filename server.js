@@ -93,6 +93,7 @@ function getVideoHTML(author, permlink, cb) {
             cb(err)
             return
         }
+        author = author.replace('@','')
                 console.log(result.content[author+'/'+permlink])
                 console.log(result.content)
         console.log(result.content)
