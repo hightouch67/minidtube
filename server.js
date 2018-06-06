@@ -71,7 +71,7 @@ function getprojectHTML(author, permlink, cb) {
             cb(err)
             return
         }
-        console.log(result)
+
         var project = result
         var html = ''
         html += '<h1>' + project.json_metadata.basics.title + '</h1>'
@@ -79,9 +79,9 @@ function getprojectHTML(author, permlink, cb) {
         html += '<h2>Date: ' + project.created.split('T')[0] + '</h2>'
         html += '<p><strong>Description: </strong>' + project.json_metadata.basics.description.replace(/(?:\r\n|\r|\n)/g, '<br />') + '</p>'
         var url = rootDomain + '/#!/' + project.author + '/' + project.permlink
-      
+        console.log(html)
         var description = project.json_metadata.basics.description.replace(/(?:\r\n|\r|\n)/g, ' ').substr(0, 300)
-        cb(null, html, project.title, description, url)
+        cb(null, html, project.json_metadata.basics.title, project.json_metadata.basics.description, url)
     })
 }
 
