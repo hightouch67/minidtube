@@ -88,7 +88,8 @@ function getRobotHTML(cb) {
 }
 
 function getVideoHTML(author, permlink, cb) {
-    console.log("hhe " + author+permlink])
+    console.log("hhe " + author + permlink)
+     console.log("hhe a" + [`/${author}/${permlink}`])
     lightrpc.send('get_state', [`/${author}/${permlink}`], function(err, result) {
         if (err) {
             cb(err)
