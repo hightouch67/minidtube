@@ -68,8 +68,9 @@ function getprojectHTML(author, permlink, cb) {
             cb(err)
             return
         }
-
+    
         var project = result
+        console.log(result)
         var html = ''
         html += '<h1>' + project.title + '</h1>'
         html += '<h2>Author: ' +  project.title + '</h2>'
