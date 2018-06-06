@@ -88,12 +88,12 @@ function getRobotHTML(cb) {
 }
 
 function getVideoHTML(author, permlink, cb) {
-    lightrpc.send('get_state', [`/${author}/${permlink}`], function(err, result) {
+    lightrpc.send('get_state', [`/myfundition/${author}/${permlink}`], function(err, result) {
         if (err) {
             cb(err)
             return
         }
-          console.log("aaa" + result)
+          console.log("aaa" + result.content)
         console.log("pemm" + result.content[author+'/'+permlink])
         var video = parseVideo(result.content[author+'/'+permlink])
         if (!video.content || !video.info) {
@@ -140,8 +140,8 @@ function getVideoHTML(author, permlink, cb) {
 function parseVideo(video, isComment) {
       console.log("vv" + video)
     try {
-      var newVideo = JSON.parse(video.json_metadata)
-    } catch(e) {
+      var newVideo = JSON.parse(video.json_metadata).video  
+      } catch(e) {
         console.log(e)
     }
     if (!newVideo) newVideo = {}
