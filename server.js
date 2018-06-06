@@ -8,7 +8,7 @@ const app = express()
 app.use(cors())
 const port = process.env.PORT || 3000
 const jsonfile = require('jsonfile')
-const crawlers = jsonfile.readFileSync(file)
+
 const rootDomain = 'https://fundition.io'
 
 const lightrpc = createClient('https://api.steemit.com');
