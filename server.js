@@ -92,6 +92,8 @@ function parseProject(project, isComment) {
     } catch(e) {
         console.log(e)
     }
+    console.log(project)
+        console.log("new"+ newproject)
     if (!newproject) newproject = {}
     newproject.active_votes = project.active_votes
     newproject.author = project.author
