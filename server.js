@@ -88,14 +88,12 @@ function getRobotHTML(cb) {
 }
 
 function getVideoHTML(author, permlink, cb) {
-    console.log("hhe " + author + permlink)
-     console.log("hhe a" + [`/${author}/${permlink}`])
     lightrpc.send('get_state', [`/myfundition/${author}/${permlink}`], function(err, result) {
         if (err) {
             cb(err)
             return
         }
-         console.log(result.content[author+'/'+permlink])
+        console.log("pemm" + result.content[author+'/'+permlink])
         var video = parseVideo(result.content[author+'/'+permlink])
         if (!video.content || !video.info) {
             cb('Weird error')
