@@ -93,8 +93,9 @@ function getVideoHTML(author, permlink, cb) {
             cb(err)
             return
         }
-          console.log("aaa" + result.content)
-        console.log("pemm" + result.content[author+'/'+permlink])
+                console.log(result.content[author+'/'+permlink])
+                console.log(result.content)
+        console.log(result.content)
         var video = parseVideo(result.content[author+'/'+permlink])
         if (!video.content || !video.info) {
             cb('Weird error')
