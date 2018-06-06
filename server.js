@@ -73,7 +73,7 @@ function getprojectHTML(author, permlink, cb) {
         var html = ''
         html += '<h1>' + project.title + '</h1>'
         html += '<h2>Author: ' +  project.title + '</h2>'
-        html += '<h2>Date: ' + project.created.split('T')[0] + '</h2>'
+        html += '<h2>Date: ' + project.created +'</h2>'
         html += '<p><strong>Description: </strong>' + project.json_metadata.body.replace(/(?:\r\n|\r|\n)/g, '<br />') + '</p>'
         var url = rootDomain + '/#!/' + project.author + '/' + project.permlink
         console.log(html)
