@@ -106,7 +106,6 @@ function parseProject(project, isComment) {
         console.log(e)
     }
     if (!newProject) newProject = {}
-    newProject.active_votes = project.active_votes
     newProject.author = project.author
     newProject.body = project.body
     newProject.total_payout_value = project.total_payout_value
