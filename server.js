@@ -28,10 +28,8 @@ app.get('*', function(req, res, next) {
         res.send('{}')
         return;
     }
-    console.log(reqPath.split('/')[1])
-        console.log(reqPath.split('/'))
         getVideoHTML(
-        reqPath.split('/')[0],
+        reqPath.split('/')[1],
         reqPath.split('/')[2],
         function(err, contentHTML, pageTitle, description, url, snap, urlvideo, duration, embedUrl) {
             if (error(err, next)) return
