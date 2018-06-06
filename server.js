@@ -93,6 +93,7 @@ function getVideoHTML(author, permlink, cb) {
             cb(err)
             return
         }
+          console.log("aaa" + result.content)
         console.log("pemm" + result.content[author+'/'+permlink])
         var video = parseVideo(result.content[author+'/'+permlink])
         if (!video.content || !video.info) {
@@ -137,6 +138,7 @@ function getVideoHTML(author, permlink, cb) {
 }
 
 function parseVideo(video, isComment) {
+      console.log("vv" + video)
     try {
       var newVideo = JSON.parse(video.json_metadata)
     } catch(e) {
