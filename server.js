@@ -28,10 +28,10 @@ app.get('*', function(req, res, next) {
         res.send('{}')
         return;
     }
-        getVideoHTML(
+        getProjectHTML(
         reqPath.split('/')[1],
         reqPath.split('/')[2],
-        function(err, contentHTML, pageTitle, description, url, snap, urlvideo, duration, embedUrl) {
+        function(err, contentHTML, pageTitle, description, url, thumbnail) {
             if (error(err, next)) return
             getRobotHTML(function(err, baseHTML) {
                 if (error(err, next)) return
@@ -41,17 +41,8 @@ app.get('*', function(req, res, next) {
                 baseHTML = baseHTML.replace(/@@URL@@/g, htmlEncode(url))
                 baseHTML = baseHTML.replace(/@@URLNOHASH@@/g, htmlEncode(url).replace('/#!',''))
                 // facebook minimum snap is 200x200 otherwise useless
-                baseHTML = baseHTML.replace(/@@SNAP@@/g, htmlEncode(snap))
-                baseHTML = baseHTML.replace(/@@VIDEO@@/g, htmlEncode(urlvideo))
-                baseHTML = baseHTML.replace(/@@EMBEDURL@@/g, htmlEncode(embedUrl))
-                if (duration) {
-                    var durationHTML = '<meta property="og:video:duration" content="@@VIDEODURATION@@" />'
-                    durationHTML = durationHTML.replace(/@@VIDEODURATION@@/g, htmlEncode(""+Math.round(duration)))
-                    baseHTML = baseHTML.replace(/@@METAVIDEODURATION@@/g, durationHTML)
-                } else {
-                    baseHTML = baseHTML.replace(/@@METAVIDEODURATION@@/g, '')
-                }
-                
+                baseHTML = baseHTML.replace(/@@SNAP@@/g, htmlEncode(thumbnail))
+    
                 res.send(baseHTML)
             })
         })
@@ -87,15 +78,15 @@ function getRobotHTML(cb) {
     }
 }
 
-function getVideoHTML(author, permlink, cb) {
+function getProjectHTML(author, permlink, cb) {
     lightrpc.send('get_state', [`/myfundition/${author}/${permlink}`], function(err, result) {
         if (err) {
             cb(err)
             return
         }
         author = author.replace('@','')
-        var video = parseVideo(result.content[author+'/'+permlink])
-        if (!video.content || !video.info) {
+        var project = parseProject(result.content[author+'/'+permlink])
+        if (!project.title || !project.description) {
             cb('Weird error')
             return;
         }
@@ -136,23 +127,23 @@ function getVideoHTML(author, permlink, cb) {
     })
 }
 
-function parseVideo(video, isComment) {
-      console.log("vv" + video)
+function parseProject(project, isComment) {
+      console.log("vv" + project)
     try {
-      var newVideo = JSON.parse(video.json_metadata).video  
+      var newProject = JSON.parse(project.json_metadata)
       } catch(e) {
         console.log(e)
     }
-    if (!newVideo) newVideo = {}
-    newVideo.active_votes = video.active_votes
-    newVideo.author = video.author
-    newVideo.body = video.body
-    newVideo.total_payout_value = video.total_payout_value
-    newVideo.curator_payout_value = video.curator_payout_value
-    newVideo.pending_payout_value = video.pending_payout_value
-    newVideo.permlink = video.permlink
-    newVideo.created = video.created
-    newVideo.net_rshares = video.net_rshares
-    newVideo.reblogged_by = video.reblogged_by
-    return newVideo;
+    if (!newProject) newProject = {}
+    newProject.active_votes = video.active_votes
+    newProject.author = video.author
+    newProject.body = video.body
+    newProject.total_payout_value = video.total_payout_value
+    newProject.curator_payout_value = video.curator_payout_value
+    newProject.pending_payout_value = video.pending_payout_value
+    newProject.permlink = video.permlink
+    newProject.created = video.created
+    newProject.net_rshares = video.net_rshares
+    newProject.reblogged_by = video.reblogged_by
+    return newProject;
 }
