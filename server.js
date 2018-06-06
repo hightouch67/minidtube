@@ -29,7 +29,7 @@ app.get('*', function(req, res, next) {
         return;
     }
         getVideoHTML(
-        reqPath.split('/')[0].replace("@",""),
+        reqPath.split('/')[0],
         reqPath.split('/')[1],
         function(err, contentHTML, pageTitle, description, url, snap, urlvideo, duration, embedUrl) {
             if (error(err, next)) return
@@ -88,7 +88,7 @@ function getRobotHTML(cb) {
 }
 
 function getVideoHTML(author, permlink, cb) {
-    lightrpc.send('get_state', [`/myfundition/@${author}/${permlink}`], function(err, result) {
+    lightrpc.send('get_state', [`/myfundition/${author}/${permlink}`], function(err, result) {
         if (err) {
             cb(err)
             return
