@@ -18,9 +18,6 @@ let layouts = {}
 app.use('/files', express.static(path.join(__dirname, 'public/files')))
 app.use('/favicon.ico', express.static(path.join(__dirname, 'public/files/fnd.png')))
 app.get('*', function(req, res, next) {
-    var isRobot = getRobotName(req.headers['user-agent'])
-
-    // parsing the query
     var reqPath = null
     if (req.query._escaped_fragment_ && req.query._escaped_fragment_.length > 0)
         reqPath = req.query._escaped_fragment_
@@ -31,8 +28,6 @@ app.get('*', function(req, res, next) {
         res.send('{}')
         return;
     }
-
-    if (isRobot) {
         getVideoHTML(
         reqPath.split('/')[1].replace("@",""),
         reqPath.split('/')[2],
@@ -60,22 +55,9 @@ app.get('*', function(req, res, next) {
                 res.send(baseHTML)
             })
         })
-    } else {
-        // HUMAN BROWSER
-        // AND DISALLOWED ROBOTS
-        if (reqPath == '/') {
-            getHumanHTML(function(err, humanHTML) {
-                if (error(err, next)) return
-                res.send(humanHTML)
-            })
-        } else {
-            res.redirect('/#!'+reqPath);
-        }
-    }
-    
 })
 
-app.listen(port, () => console.log('minidtube listening on port '+port))
+app.listen(port, () => console.log('minifundition listening on port '+port))
 
 function error(err, next) {
     if (err) {
@@ -98,24 +80,6 @@ function getRobotHTML(cb) {
                 return
             } else {
                 layouts.robot = data
-                cb(null, data)
-                return
-            }
-        });
-    }
-}
-
-function getHumanHTML(cb) {
-    if (layouts.human) {
-        cb(null, layouts.human)
-        return
-    } else {
-        fs.readFile(path.join(__dirname,"static","production","index.html"), 'utf8', function (err,data) {
-            if (err) {
-                cb(err)
-                return
-            } else {
-                layouts.human = data
                 cb(null, data)
                 return
             }
@@ -190,13 +154,4 @@ function parseVideo(video, isComment) {
     newVideo.net_rshares = video.net_rshares
     newVideo.reblogged_by = video.reblogged_by
     return newVideo;
-}
-
-function getRobotName(userAgent) {
-    for (let i = 0; i < crawlers.length; i++) {
-        var re = new RegExp(crawlers[i].pattern);
-        var isRobot = re.test(userAgent)
-        if (isRobot) return crawlers[i].pattern;
-    }
-    return;
 }
