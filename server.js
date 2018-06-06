@@ -37,7 +37,7 @@ app.get('*', function (req, res, next) {
     getprojectHTML(
         reqPath.split('/')[0],
         reqPath.split('/')[1],
-        function (err, contentHTML, pageTitle, description, url, snap, urlvideo, duration, embedUrl) {
+        function (err, contentHTML, pageTitle, description, url) {
             if (error(err, next)) return
             getRobotHTML(function (err, baseHTML) {
                 if (error(err, next)) return
@@ -47,16 +47,6 @@ app.get('*', function (req, res, next) {
                 baseHTML = baseHTML.replace(/@@URL@@/g, htmlEncode(url))
                 baseHTML = baseHTML.replace(/@@URLNOHASH@@/g, htmlEncode(url).replace('/#!', ''))
                 // facebook minimum snap is 200x200 otherwise useless
-                baseHTML = baseHTML.replace(/@@SNAP@@/g, htmlEncode(snap))
-                baseHTML = baseHTML.replace(/@@VIDEO@@/g, htmlEncode(urlvideo))
-                baseHTML = baseHTML.replace(/@@EMBEDURL@@/g, htmlEncode(embedUrl))
-                if (duration) {
-                    var durationHTML = '<meta property="og:video:duration" content="@@VIDEODURATION@@" />'
-                    durationHTML = durationHTML.replace(/@@VIDEODURATION@@/g, htmlEncode("" + Math.round(duration)))
-                    baseHTML = baseHTML.replace(/@@METAVIDEODURATION@@/g, durationHTML)
-                } else {
-                    baseHTML = baseHTML.replace(/@@METAVIDEODURATION@@/g, '')
-                }
 
                 res.send(baseHTML)
             })
