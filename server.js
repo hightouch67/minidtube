@@ -32,11 +32,7 @@ app.get('*', function(req, res, next) {
         return;
     }
 
-    if (isRobot)
-        console.log(isRobot, 'GET', req.path, req.query)
-    
-    if (isRobot && reqPath.startsWith('/v/')) {
-        // DIRTY ROBOTS
+    if (isRobot) {
         getVideoHTML(
         reqPath.split('/')[2],
         reqPath.split('/')[3],
