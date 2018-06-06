@@ -29,8 +29,8 @@ app.get('*', function(req, res, next) {
         return;
     }
         getVideoHTML(
-        reqPath.split('/')[1].replace("@",""),
-        reqPath.split('/')[2],
+        reqPath.split('/')[0].replace("@",""),
+        reqPath.split('/')[1],
         function(err, contentHTML, pageTitle, description, url, snap, urlvideo, duration, embedUrl) {
             if (error(err, next)) return
             getRobotHTML(function(err, baseHTML) {
