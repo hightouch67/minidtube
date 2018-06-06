@@ -32,8 +32,8 @@ app.get('*', function (req, res, next) {
         return;
     }
     getprojectHTML(
-        reqPath.split('/')[0],
         reqPath.split('/')[1],
+        reqPath.split('/')[2],
         function (err, contentHTML, pageTitle, description, url) {
             if (error(err, next)) return
             getRobotHTML(function (err, baseHTML) {
