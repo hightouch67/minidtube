@@ -76,7 +76,7 @@ function error(err, next) {
 }
 
 function getprojectHTML(author, permlink, cb) {
-    lightrpc.send('get_state', [`/@${author}/${permlink}`], function (err, result) {
+    lightrpc.send('get_state', [`/${author}/${permlink}`], function (err, result) {
         if (err) {
             cb(err)
             return
