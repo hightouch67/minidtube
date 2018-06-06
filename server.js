@@ -114,7 +114,6 @@ function getProjectHTML(author, permlink, cb) {
 }
 
 function parseProject(project, isComment) {
-      console.log("vv" + project)
     try {
       var newProject = JSON.parse(project.json_metadata)
       } catch(e) {
