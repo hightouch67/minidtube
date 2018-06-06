@@ -29,6 +29,8 @@ app.get('*', function(req, res, next) {
         return;
     }
     console.log(reqPath + reqPath.split('/')[1])
+        console.log("3" + reqPath.split('/')[3])
+          console.log("4" + reqPath.split('/')[4])
         getVideoHTML(
         reqPath.split('/')[0],
         reqPath.split('/')[2],
@@ -89,7 +91,6 @@ function getRobotHTML(cb) {
 }
 
 function getVideoHTML(author, permlink, cb) {
-    console.log(author, permlink)
     lightrpc.send('get_state', [`/myfundition/${author}/${permlink}`], function(err, result) {
         if (err) {
             cb(err)
