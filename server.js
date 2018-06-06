@@ -68,8 +68,11 @@ function getprojectHTML(author, permlink, cb) {
             cb(err)
             return
         }
-    
-        var project = result
+        var project = parseProject(result.content[author+'/'+permlink])
+        if (!project.content || !project.info) {
+            cb('Weird error')
+            return;
+        }
         console.log(result)
         var html = ''
         html += '<h1>' + project.title + '</h1>'
@@ -83,3 +86,22 @@ function getprojectHTML(author, permlink, cb) {
     })
 }
 
+function parseProject(project, isComment) {
+    try {
+      var newproject = JSON.parse(project.json_metadata)
+    } catch(e) {
+        console.log(e)
+    }
+    if (!newproject) newproject = {}
+    newproject.active_votes = project.active_votes
+    newproject.author = project.author
+    newproject.body = project.body
+    newproject.total_payout_value = project.total_payout_value
+    newproject.curator_payout_value = project.curator_payout_value
+    newproject.pending_payout_value = project.pending_payout_value
+    newproject.permlink = project.permlink
+    newproject.created = project.created
+    newproject.net_rshares = project.net_rshares
+    newproject.reblogged_by = project.reblogged_by
+    return newproject;
+}
