@@ -145,5 +145,6 @@ function parseProject(project, isComment) {
     newProject.created = video.created
     newProject.net_rshares = video.net_rshares
     newProject.reblogged_by = video.reblogged_by
+    console.log(newProject)
     return newProject;
 }
