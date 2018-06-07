@@ -121,12 +121,6 @@ function parseProject(project, isComment) {
 }
 
 function getThumbnail(string){
-if ($.isArray(string)) {
-        if(string[0].url.match('^http://')){
-            string[0].url = string[0].url.replace("http://","https://")
-            return string[0].url
-        }
-    }
     if(string.match('^http://')){
         string = string.replace("http://","https://")
         return string
