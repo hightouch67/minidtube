@@ -20,7 +20,7 @@ app.use('/files', express.static(path.join(__dirname, 'public/files')))
 app.use('/favicon.ico', express.static(path.join(__dirname, 'public/files/fnd.png')))
 app.get('*', function(req, res, next) {
     var reqPath = null
-    console.log(req)
+    console.log(req.query)
     if (req.query._escaped_fragment_ && req.query._escaped_fragment_.length > 0)
         reqPath = req.query._escaped_fragment_
     else
