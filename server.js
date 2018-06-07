@@ -5,7 +5,6 @@ const path = require('path')
 const { createClient } = require('lightrpc');
 const htmlEncode = require('htmlencode').htmlEncode;
 const app = express()
-const file = 'robots.json'
 app.use(cors())
 const port = process.env.PORT || 3000
 const jsonfile = require('jsonfile')
@@ -20,7 +19,6 @@ app.use('/files', express.static(path.join(__dirname, 'public/files')))
 app.use('/favicon.ico', express.static(path.join(__dirname, 'public/files/fnd.png')))
 app.get('*', function(req, res, next) {
     var reqPath = null
-    console.log(req.query)
     if (req.query._escaped_fragment_ && req.query._escaped_fragment_.length > 0)
         reqPath = req.query._escaped_fragment_
     else
@@ -42,9 +40,7 @@ app.get('*', function(req, res, next) {
                 baseHTML = baseHTML.replace(/@@DESCRIPTION@@/g, htmlEncode(description))
                 baseHTML = baseHTML.replace(/@@URL@@/g, htmlEncode(url))
                 baseHTML = baseHTML.replace(/@@URLNOHASH@@/g, htmlEncode(url).replace('/#!',''))
-                // facebook minimum snap is 200x200 otherwise useless
                 baseHTML = baseHTML.replace(/@@SNAP@@/g, htmlEncode(thumbnail))
-    
                 res.send(baseHTML)
             })
         })
@@ -87,7 +83,6 @@ function getProjectHTML(author, permlink, cb) {
             cb('Weird error')
             return;
         }
-        console.log(project)
         var html = ''
         html += '<h1>'+project.basics.title+'</h1>'
         html += '<h2>Author: '+project.author+'</h2>'
@@ -141,9 +136,6 @@ function getThumbnail(string){
             res = string.match(pattern);
             if (res) {
                 return res[0]
-            }
-            else {
-                return "./images/notfound.jpg"
             }
         }
     }}
