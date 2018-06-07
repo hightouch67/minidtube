@@ -5,7 +5,6 @@ const path = require('path')
 const { createClient } = require('lightrpc');
 const htmlEncode = require('htmlencode').htmlEncode;
 const app = express()
-const jsonfile = require('jsonfile')
 const file = 'robots.json'
 app.use(cors())
 const port = process.env.PORT || 3000
@@ -21,6 +20,7 @@ app.use('/files', express.static(path.join(__dirname, 'public/files')))
 app.use('/favicon.ico', express.static(path.join(__dirname, 'public/files/fnd.png')))
 app.get('*', function(req, res, next) {
     var reqPath = null
+    console.log(req.query)
     if (req.query._escaped_fragment_ && req.query._escaped_fragment_.length > 0)
         reqPath = req.query._escaped_fragment_
     else
@@ -95,7 +95,7 @@ function getProjectHTML(author, permlink, cb) {
         html += '<p><strong>Description: </strong>'+project.basics.description.replace(/(?:\r\n|\r|\n)/g, '<br />')+'</p>'
 
         var url = rootDomain+'/#!/'+project.author+'/'+project.permlink
-        var snap = 'https://ipfs.io/ipfs/'+project.body
+        var snap = getThumbnail(project.basics.description)
         var description = project.basics.description.replace(/(?:\r\n|\r|\n)/g, ' ').substr(0, 300)
         cb(null, html, project.basics.title, project.basics.description, url, snap)
     })
@@ -119,3 +119,31 @@ function parseProject(project, isComment) {
     newProject.reblogged_by = project.reblogged_by
     return newProject;
 }
+
+function getThumbnail(string){
+    if(string.match('^http://')){
+        string = string.replace("http://","https://")
+        return string
+    }
+   
+    var matches = string.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    if (matches) {
+        return string
+    }
+    else {
+        var pattern = "(http(s?):)([/|.|\\w|\\s])*." + "(?:jpe?g|gif|png|JPG)";
+        var res = string.match(pattern);
+        if (res) {
+            return res[0]
+        }
+        else {
+            pattern = "(http(s?):\/\/.*\.(?:jpe?g|gif|png|JPG))";
+            res = string.match(pattern);
+            if (res) {
+                return res[0]
+            }
+            else {
+                return "./images/notfound.jpg"
+            }
+        }
+    }}
