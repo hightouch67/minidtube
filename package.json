@@ -1,16 +1,16 @@
 {
-  "name": "minidtube",
+  "name": "minifundition",
   "version": "1.0.0",
-  "description": "generates html for robots who dont understand dtube",
+  "description": "generates html for robots who dont understand Fundition",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "dtube",
+    "fundition",
     "video"
   ],
-  "author": "Adrien M",
+  "author": "Adrien M & Aytac CETINKAYA",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.4",
