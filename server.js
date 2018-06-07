@@ -95,7 +95,7 @@ function getProjectHTML(author, permlink, cb) {
         html += '<p><strong>Description: </strong>'+project.basics.description.replace(/(?:\r\n|\r|\n)/g, '<br />')+'</p>'
 
         var url = rootDomain+'/#!/'+project.author+'/'+project.permlink
-        var snap = 'https://ipfs.io/ipfs/'+project.body
+        var snap = getThumbnail(project.basics.description)
         var description = project.basics.description.replace(/(?:\r\n|\r|\n)/g, ' ').substr(0, 300)
         cb(null, html, project.basics.title, project.basics.description, url, snap)
     })
@@ -119,3 +119,37 @@ function parseProject(project, isComment) {
     newProject.reblogged_by = project.reblogged_by
     return newProject;
 }
+
+function getThumbnail(string){
+if ($.isArray(string)) {
+        if(string[0].url.match('^http://')){
+            string[0].url = string[0].url.replace("http://","https://")
+            return string[0].url
+        }
+    }
+    if(string.match('^http://')){
+        string = string.replace("http://","https://")
+        return string
+    }
+   
+    var matches = string.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    if (matches) {
+        return string
+    }
+    else {
+        var pattern = "(http(s?):)([/|.|\\w|\\s])*." + "(?:jpe?g|gif|png|JPG)";
+        var res = string.match(pattern);
+        if (res) {
+            return res[0]
+        }
+        else {
+            pattern = "(http(s?):\/\/.*\.(?:jpe?g|gif|png|JPG))";
+            res = string.match(pattern);
+            if (res) {
+                return res[0]
+            }
+            else {
+                return "./images/notfound.jpg"
+            }
+        }
+    }}
