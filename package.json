@@ -1,16 +1,16 @@
 {
   "name": "minifundition",
   "version": "1.0.0",
-  "description": "generates html for robots who dont understand Fundition",
+  "description": "Generates simple html for robots",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "fundition",
-    "video"
+    "crowdfunding"
   ],
-  "author": "Adrien M & Aytac CETINKAYA",
+  "author": "Adrien M (modified by Aytac CETINKAYA)",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.4",

@@ -52,6 +52,7 @@ function error(err, next) {
     if (err) {
         console.log(err)
         next()
+        res.redirect('/#!'+reqPath);
         return true
     }
     return false
