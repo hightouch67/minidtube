@@ -29,8 +29,8 @@ app.get('*', function(req, res, next) {
         return;
     }
     if(reqPath = '/')
-    {
-        res.redirect('https://fundition.io');
+    { 
+        res.status(301).redirect("https://fundition.io")
     }
         getProjectHTML(
         reqPath.split('/')[1],
