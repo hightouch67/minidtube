@@ -29,9 +29,10 @@ app.get('*', function(req, res, next) {
         return;
     }
     console.log(reqPath)
-    if(reqPath == '/')
+    if(reqPath === '/')
     { 
         res.status(301).redirect("https://fundition.io")
+        return;
     }
         getProjectHTML(
         reqPath.split('/')[1],
