@@ -28,6 +28,10 @@ app.get('*', function(req, res, next) {
         res.send('{}')
         return;
     }
+    if(reqPath = '/')
+    {
+        res.redirect('/#!'+reqPath);
+    }
         getProjectHTML(
         reqPath.split('/')[1],
         reqPath.split('/')[2],
@@ -52,7 +56,6 @@ function error(err, next) {
     if (err) {
         console.log(err)
         next()
-        res.redirect('/#!'+reqPath);
         return true
     }
     return false
