@@ -28,9 +28,10 @@ app.get('*', function(req, res, next) {
         res.send('{}')
         return;
     }
-    console.log(reqPath)
+    //console.log(reqPath)
     if(req.path == '/' || req.path == null || req.path == undefined)
     { 
+        console.log('redirect to 301')
         res.status(301).redirect("https://fundition.io")
         return;
     }
