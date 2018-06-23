@@ -31,19 +31,21 @@ app.get('*', function(req, res, next) {
     var t = reqPath.split('/')[2]
     if(t == null || t == undefined)
     { 
-        contentHTML = "Fundition is a next-generation, decentralized, peer-to-peer crowdfunding and collaboration platform, built on the Steem blockchain, that aims to replace extant, outmoded, centralized models such as Kickstarter, GoFundMe, Indiegogo, and Patreon; while offering a valuable solution to link creative entrepreneurs with like-minded supporters."
-        pageTitle = "Fundition - Next-Gen Decentralized Crowdfunding"
-        description = "Fundition is a next-generation, decentralized, peer-to-peer crowdfunding and collaboration platform, built on Steem blockchain."
-        url = 'https://fundition.io'+ req.path
-        thumbnail = 'https://fundition.io/images/fundition.jpg'
-
-        baseHTML = baseHTML.replace(/@@CONTENT@@/g, contentHTML)
-        baseHTML = baseHTML.replace(/@@TITLE@@/g, htmlEncode(pageTitle))
-        baseHTML = baseHTML.replace(/@@DESCRIPTION@@/g, htmlEncode(description))
-        baseHTML = baseHTML.replace(/@@URL@@/g, htmlEncode(url))
-        baseHTML = baseHTML.replace(/@@URLNOHASH@@/g, htmlEncode(url).replace('/#!',''))
-        baseHTML = baseHTML.replace(/@@SNAP@@/g, htmlEncode(thumbnail))
-        res.send(baseHTML)
+        getRobotHTML(function(err, baseHTML) {
+            if (error(err, next)) return
+            contentHTML = "Fundition is a next-generation, decentralized, peer-to-peer crowdfunding and collaboration platform, built on the Steem blockchain, that aims to replace extant, outmoded, centralized models such as Kickstarter, GoFundMe, Indiegogo, and Patreon; while offering a valuable solution to link creative entrepreneurs with like-minded supporters."
+            pageTitle = "Fundition - Next-Gen Decentralized Crowdfunding"
+            description = "Fundition is a next-generation, decentralized, peer-to-peer crowdfunding and collaboration platform, built on Steem blockchain."
+            url = 'https://fundition.io'+ req.path
+            thumbnail = 'https://fundition.io/images/fundition.jpg'
+            baseHTML = baseHTML.replace(/@@CONTENT@@/g, contentHTML)
+            baseHTML = baseHTML.replace(/@@TITLE@@/g, htmlEncode(pageTitle))
+            baseHTML = baseHTML.replace(/@@DESCRIPTION@@/g, htmlEncode(description))
+            baseHTML = baseHTML.replace(/@@URL@@/g, htmlEncode(url))
+            baseHTML = baseHTML.replace(/@@URLNOHASH@@/g, htmlEncode(url).replace('/#!',''))
+            baseHTML = baseHTML.replace(/@@SNAP@@/g, htmlEncode(thumbnail))
+            res.send(baseHTML)
+        })
     }
         getProjectHTML(
         reqPath.split('/')[1],
