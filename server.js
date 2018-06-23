@@ -47,22 +47,24 @@ app.get('*', function(req, res, next) {
             res.send(baseHTML)
         })
     }
+    else{
         getProjectHTML(
-        reqPath.split('/')[1],
-        reqPath.split('/')[2],
-        function(err, contentHTML, pageTitle, description, url, thumbnail) {
-            if (error(err, next)) return
-            getRobotHTML(function(err, baseHTML) {
+            reqPath.split('/')[1],
+            reqPath.split('/')[2],
+            function(err, contentHTML, pageTitle, description, url, thumbnail) {
                 if (error(err, next)) return
-                baseHTML = baseHTML.replace(/@@CONTENT@@/g, contentHTML)
-                baseHTML = baseHTML.replace(/@@TITLE@@/g, htmlEncode(pageTitle))
-                baseHTML = baseHTML.replace(/@@DESCRIPTION@@/g, htmlEncode(description))
-                baseHTML = baseHTML.replace(/@@URL@@/g, htmlEncode(url))
-                baseHTML = baseHTML.replace(/@@URLNOHASH@@/g, htmlEncode(url).replace('/#!',''))
-                baseHTML = baseHTML.replace(/@@SNAP@@/g, htmlEncode(thumbnail))
-                res.send(baseHTML)
+                getRobotHTML(function(err, baseHTML) {
+                    if (error(err, next)) return
+                    baseHTML = baseHTML.replace(/@@CONTENT@@/g, contentHTML)
+                    baseHTML = baseHTML.replace(/@@TITLE@@/g, htmlEncode(pageTitle))
+                    baseHTML = baseHTML.replace(/@@DESCRIPTION@@/g, htmlEncode(description))
+                    baseHTML = baseHTML.replace(/@@URL@@/g, htmlEncode(url))
+                    baseHTML = baseHTML.replace(/@@URLNOHASH@@/g, htmlEncode(url).replace('/#!',''))
+                    baseHTML = baseHTML.replace(/@@SNAP@@/g, htmlEncode(thumbnail))
+                    res.send(baseHTML)
+                })
             })
-        })
+    }
 })
 
 app.listen(port, () => console.log('minifundition listening on port '+port))
