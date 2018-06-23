@@ -33,9 +33,9 @@ app.get('*', function(req, res, next) {
     { 
         getRobotHTML(function(err, baseHTML) {
             if (error(err, next)) return
-            contentHTML = "Fundition is a next-generation, decentralized, peer-to-peer crowdfunding and collaboration platform, built on the Steem blockchain, that aims to replace extant, outmoded, centralized models such as Kickstarter, GoFundMe, Indiegogo, and Patreon; while offering a valuable solution to link creative entrepreneurs with like-minded supporters."
-            pageTitle = "Fundition - Next-Gen Decentralized Crowdfunding"
-            description = "Fundition is a next-generation, decentralized, peer-to-peer crowdfunding and collaboration platform, built on Steem blockchain."
+            contentHTML = "Fundition.io is a next-generation, decentralized, peer-to-peer crowdfunding and collaboration platform, built on the Steem blockchain, that aims to replace extant, outmoded, centralized models such as Kickstarter, GoFundMe, Indiegogo, and Patreon; while offering a valuable solution to link creative entrepreneurs with like-minded supporters."
+            pageTitle = "Fundition.io - Next-Gen Decentralized Crowdfunding"
+            description = "Fundition.io is a next-generation, decentralized, peer-to-peer crowdfunding and collaboration platform, built on Steem blockchain."
             url = 'https://fundition.io'+ req.path
             thumbnail = 'https://fundition.io/images/fundition.jpg'
             baseHTML = baseHTML.replace(/@@CONTENT@@/g, contentHTML)
