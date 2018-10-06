@@ -105,19 +105,16 @@ function getProjectHTML(author, permlink, cb) {
             return;
         }
         var html = ''
+        console.log(project)
         html += '<h1>'+project.title+'</h1>'
-        if(project.basics.title)
-        html += '<h1>'+project.basics.title+'</h1>'
         html += '<h2>Author: '+project.author+'</h2>'
         html += '<h2>Date: '+project.created.split('T')[0]+'</h2>'
-        if(!project.basics.description)
-        project.basics.description = project.body
-        html += '<p><strong>Description: </strong>'+ cleanText(project.basics.description)+'</p>'
+        html += '<p><strong>Description: </strong>'+ cleanText(project.body)+'</p>'
 
         var url = rootDomain+'/#!/'+project.author+'/'+project.permlink
-        var snap = getThumbnail(project.basics.description)
-        var description = project.basics.description.replace(/(?:\r\n|\r|\n)/g, ' ').substr(0, 300)
-        cb(null, html, project.title, project.basics.description, url, snap)
+        var snap = getThumbnail(project.body)
+        var description = project.body.replace(/(?:\r\n|\r|\n)/g, ' ').substr(0, 300)
+        cb(null, html, project.title, project.body, url, snap)
     })
 }
 
