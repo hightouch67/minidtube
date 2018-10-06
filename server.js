@@ -105,25 +105,27 @@ function getProjectHTML(author, permlink, cb) {
             return;
         }
         var html = ''
-        console.log(project)
-        html += '<h1>'+project.title+'</h1>'
+        html += '<h1>'+project.basics.title+'</h1>'
         html += '<h2>Author: '+project.author+'</h2>'
         html += '<h2>Date: '+project.created.split('T')[0]+'</h2>'
-        html += '<p><strong>Description: </strong>'+ project.body+'</p>'
+        html += '<p><strong>Description: </strong>'+project.basics.description.replace(/(?:\r\n|\r|\n)/g, '<br />')+'</p>'
 
         var url = rootDomain+'/#!/'+project.author+'/'+project.permlink
-        var snap = getThumbnail(project.body)
-        var description = project.body.replace(/(?:\r\n|\r|\n)/g, ' ').substr(0, 300)
-        cb(null, html, project.title, project.body, url, snap)
+        var snap = getThumbnail(project.basics.description)
+        var description = project.basics.description.replace(/(?:\r\n|\r|\n)/g, ' ').substr(0, 300)
+        cb(null, html, project.basics.title, cleanText(project.basics.description), url, snap)
     })
 }
 
 function parseProject(project, isComment) {
-    newProject = {}
+    try {
+      var newProject = JSON.parse(project.json_metadata)
+      } catch(e) {
+        console.log(e)
+    }
+    if (!newProject) newProject = {}
     newProject.author = project.author
-    newProject.title = project.title
-    newProject.body = cleanText(project.body)
-    newProject.thumb = project.body
+    newProject.body = project.body
     newProject.total_payout_value = project.total_payout_value
     newProject.curator_payout_value = project.curator_payout_value
     newProject.pending_payout_value = project.pending_payout_value
@@ -135,50 +137,63 @@ function parseProject(project, isComment) {
 }
 
 function getThumbnail(string){
-    if (!string) return
-    else {
-        var __imgRegex = /https?:\/\/(?:[-a-zA-Z0-9._]*[-a-zA-Z0-9])(?::\d{2,5})?(?:[/?#](?:[^\s"'<>\][()]*[^\s"'<>\][().,])?(?:(?:\.(?:tiff?|jpe?g|gif|png|svg|ico)|ipfs\/[a-z\d]{40,})))/gi;
-        if (__imgRegex.test(string)) {
-
-            return string.match(__imgRegex)[0];
-        }
+    if(string.match('^http://')){
+        string = string.replace("http://","https://")
+        return string
     }
-}
-
+   
+    var matches = string.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    if (matches) {
+        return string
+    }
+    else {
+        var pattern = "(http(s?):)([/|.|\\w|\\s])*." + "(?:jpe?g|gif|png|JPG)";
+        var res = string.match(pattern);
+        if (res) {
+            return res[0]
+        }
+        else {
+            pattern = "(http(s?):\/\/.*\.(?:jpe?g|gif|png|JPG))";
+            res = string.match(pattern);
+            if (res) {
+                return res[0]
+            }
+        }
+    }}
 
     function cleanText(text){
-            if (!text) return text;
-            var urlPattern = /\b(?:https?|ftp):\/\/[a-z0-9-+&@#\/%?=~_|!:,.;]*[a-z0-9-+&@#\/%=~_|]/gim;
-            text = text.replace(urlPattern, "")
-            text = text.replace(/<img[^>"']*((("[^"]*")|('[^']*'))[^"'>]*)*>/g, "");
-            text = text.replace(/<(?:.|\n)*?>/gm, '');
-            //-- remove BR tags and replace them with line break
-            text = text.replace(/<br>/gi, "");
-            text = text.replace(/<br\s\/>/gi, "");
-            text = text.replace(/<br\/>/gi, "");
-            text = text.replace(/<iframe(.+)<\/iframe>/g, "");
-            //-- remove P and A tags but preserve what's inside of them
-            text = text.replace(/<p.*>/gi, "");
-            text = text.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 ($1)");
-        
-            //-- remove all inside SCRIPT and STYLE tags
-            text = text.replace(/<script.*>[\w\W]{1,}(.*?)[\w\W]{1,}<\/script>/gi, "");
-            text = text.replace(/<style.*>[\w\W]{1,}(.*?)[\w\W]{1,}<\/style>/gi, "");
-            //-- remove all else
-            text = text.replace(/<(?:.|\s)*?>/g, "");
-        
-            //-- get rid of more than 2 multiple line breaks:
-            text = text.replace(/(?:(?:\r\n|\r|\n)\s*){2,}/gim, "");
-        
-            //-- get rid of more than 2 spaces:
-            text = text.replace(/ +(?= )/g, '');
-        
-            //-- get rid of html-encoded characters:
-            text = text.replace(/&nbsp;/gi, " ");
-            text = text.replace(/&amp;/gi, "&");
-            text = text.replace(/&quot;/gi, '"');
-            text = text.replace(/&lt;/gi, '<');
-            text = text.replace(/&gt;/gi, '>');
-            text = text.replace(/\.[^/.]+$/, "")
-            return text;
-    }
+        if (!text) return text;
+        var urlPattern = /\b(?:https?|ftp):\/\/[a-z0-9-+&@#\/%?=~_|!:,.;]*[a-z0-9-+&@#\/%=~_|]/gim;
+        text = text.replace(urlPattern, "")
+        text = text.replace(/<img[^>"']*((("[^"]*")|('[^']*'))[^"'>]*)*>/g, "");
+        text = text.replace(/<(?:.|\n)*?>/gm, '');
+        //-- remove BR tags and replace them with line break
+        text = text.replace(/<br>/gi, "");
+        text = text.replace(/<br\s\/>/gi, "");
+        text = text.replace(/<br\/>/gi, "");
+        text = text.replace(/<iframe(.+)<\/iframe>/g, "");
+        //-- remove P and A tags but preserve what's inside of them
+        text = text.replace(/<p.*>/gi, "");
+        text = text.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 ($1)");
+    
+        //-- remove all inside SCRIPT and STYLE tags
+        text = text.replace(/<script.*>[\w\W]{1,}(.*?)[\w\W]{1,}<\/script>/gi, "");
+        text = text.replace(/<style.*>[\w\W]{1,}(.*?)[\w\W]{1,}<\/style>/gi, "");
+        //-- remove all else
+        text = text.replace(/<(?:.|\s)*?>/g, "");
+    
+        //-- get rid of more than 2 multiple line breaks:
+        text = text.replace(/(?:(?:\r\n|\r|\n)\s*){2,}/gim, "");
+    
+        //-- get rid of more than 2 spaces:
+        text = text.replace(/ +(?= )/g, '');
+    
+        //-- get rid of html-encoded characters:
+        text = text.replace(/&nbsp;/gi, " ");
+        text = text.replace(/&amp;/gi, "&");
+        text = text.replace(/&quot;/gi, '"');
+        text = text.replace(/&lt;/gi, '<');
+        text = text.replace(/&gt;/gi, '>');
+        text = text.replace(/\.[^/.]+$/, "")
+        return text;
+}
