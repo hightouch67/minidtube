@@ -117,7 +117,7 @@ function getProjectHTML(author, permlink, cb) {
         var url = rootDomain+'/#!/'+project.author+'/'+project.permlink
         var snap = getThumbnail(project.basics.description)
         var description = project.basics.description.replace(/(?:\r\n|\r|\n)/g, ' ').substr(0, 300)
-        cb(null, html, project.basics.title, project.basics.description, url, snap)
+        cb(null, html, project.title, project.basics.description, url, snap)
     })
 }
 
