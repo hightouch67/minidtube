@@ -108,7 +108,7 @@ function getProjectHTML(author, permlink, cb) {
         html += '<h1>'+project.basics.title+'</h1>'
         html += '<h2>Author: '+project.author+'</h2>'
         html += '<h2>Date: '+project.created.split('T')[0]+'</h2>'
-        html += '<p><strong>Description: </strong>'+project.basics.description.replace(/(?:\r\n|\r|\n)/g, '<br />')+'</p>'
+        html += '<p><strong>Description: </strong>'+project.basics.description.substr(0, 300).replace(/(?:\r\n|\r|\n)/g, '<br />')+'</p><strong>Support this project on Fundition.io! </strong>'
 
         var url = rootDomain+'/#!/'+project.author+'/'+project.permlink
         var snap = getThumbnail(project.basics.description)
