@@ -112,7 +112,7 @@ function getProjectHTML(author, permlink, cb) {
         var description = '<p>'+project.basics.description+'</p><strong>Support this project on Fundition.io! </strong>'
         var url = rootDomain+'/#!/'+project.author+'/'+project.permlink
         var snap = getThumbnail(project.basics.description)
-        cb(null, html, project.basics.title, cleanText(description.substr(0, 200)), url, snap)
+        cb(null, html, project.basics.title, cleanText(description).substr(0, 200), url, snap)
     })
 }
 
