@@ -124,6 +124,7 @@ function getProjectHTML(author, permlink, cb) {
 function parseProject(project, isComment) {
     newProject = {}
     newProject.author = project.author
+    newProject.title = project.title
     newProject.body = cleanText(project.body)
     newProject.total_payout_value = project.total_payout_value
     newProject.curator_payout_value = project.curator_payout_value
