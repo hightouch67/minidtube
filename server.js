@@ -109,10 +109,11 @@ function getProjectHTML(author, permlink, cb) {
         html += '<h2>Author: '+project.author+'</h2>'
         html += '<h2>Date: '+project.created.split('T')[0]+'</h2>'
         html += '<p><strong>Description: </strong>'+project.basics.description.substr(0, 200).replace(/(?:\r\n|\r|\n)/g, '<br />')+'</p><strong>Support this project on Fundition.io! </strong>'
-        var description = '<p>'+project.basics.description+'</p><strong>Support this project on Fundition.io! </strong>'
+        var content = cleanText(project.basics.description)
+        var description = '<p>'+content.substr(0, 200)+'</p><strong>Support this project on Fundition.io! </strong>'
         var url = rootDomain+'/#!/'+project.author+'/'+project.permlink
         var snap = getThumbnail(project.basics.description)
-        cb(null, html, project.basics.title, cleanText(description).substr(0, 200), url, snap)
+        cb(null, html, project.basics.title, description, url, snap)
     })
 }
 
