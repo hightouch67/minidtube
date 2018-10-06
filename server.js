@@ -123,7 +123,7 @@ function parseProject(project, isComment) {
     newProject.author = project.author
     newProject.title = project.title
     newProject.body = cleanText(project.body)
-    if(project.basic.description)
+    if(project.basic.description != undefined)
     newProject.body = cleanText(project.basic.description)
     newProject.total_payout_value = project.total_payout_value
     newProject.curator_payout_value = project.curator_payout_value
