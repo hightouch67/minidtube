@@ -135,29 +135,15 @@ function parseProject(project, isComment) {
 }
 
 function getThumbnail(string){
-    if(string.match('^http://')){
-        string = string.replace("http://","https://")
-        return string
-    }
-   
-    var matches = string.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-    if (matches) {
-        return string
-    }
+    if (!string) return
     else {
-        var pattern = "(http(s?):)([/|.|\\w|\\s])*." + "(?:jpe?g|gif|png|JPG)";
-        var res = string.match(pattern);
-        if (res) {
-            return res[0]
+        var __imgRegex = /https?:\/\/(?:[-a-zA-Z0-9._]*[-a-zA-Z0-9])(?::\d{2,5})?(?:[/?#](?:[^\s"'<>\][()]*[^\s"'<>\][().,])?(?:(?:\.(?:tiff?|jpe?g|gif|png|svg|ico)|ipfs\/[a-z\d]{40,})))/gi;
+        if (__imgRegex.test(string)) {
+
+            return string.match(__imgRegex)[0];
         }
-        else {
-            pattern = "(http(s?):\/\/.*\.(?:jpe?g|gif|png|JPG))";
-            res = string.match(pattern);
-            if (res) {
-                return res[0]
-            }
-        }
-    }}
+    }
+}
 
 
     function cleanText(text){
