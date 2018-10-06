@@ -118,13 +118,7 @@ function getProjectHTML(author, permlink, cb) {
 }
 
 function parseProject(project, isComment) {
-    console.log(project.author)
-    try {
-      var newProject = JSON.parse(project.json_metadata)
-      } catch(e) {
-        console.log(e)
-    }
-    if (!newProject) newProject = {}
+    newProject = {}
     newProject.author = project.author
     newProject.body = cleanText(project.body)
     newProject.total_payout_value = project.total_payout_value
