@@ -108,11 +108,10 @@ function getProjectHTML(author, permlink, cb) {
         html += '<h1>'+project.basics.title+'</h1>'
         html += '<h2>Author: '+project.author+'</h2>'
         html += '<h2>Date: '+project.created.split('T')[0]+'</h2>'
-        html += '<p><strong>Description: </strong>'+project.basics.description.substr(0, 300).replace(/(?:\r\n|\r|\n)/g, '<br />')+'</p><strong>Support this project on Fundition.io! </strong>'
+        html += '<p><strong>Description: </strong>'+project.basics.description.substr(0, 200).replace(/(?:\r\n|\r|\n)/g, '<br />')+'</p><strong>Support this project on Fundition.io! </strong>'
 
         var url = rootDomain+'/#!/'+project.author+'/'+project.permlink
         var snap = getThumbnail(project.basics.description)
-        var description = project.basics.description.replace(/(?:\r\n|\r|\n)/g, ' ').substr(0, 300)
         cb(null, html, project.basics.title, cleanText(project.basics.description), url, snap)
     })
 }
@@ -137,29 +136,16 @@ function parseProject(project, isComment) {
 }
 
 function getThumbnail(string){
+    var __imgRegex = /https?:\/\/(?:[-a-zA-Z0-9._]*[-a-zA-Z0-9])(?::\d{2,5})?(?:[/?#](?:[^\s"'<>\][()]*[^\s"'<>\][().,])?(?:(?:\.(?:tiff?|jpe?g|gif|png|svg|ico)|ipfs\/[a-z\d]{40,})))/gi;
+    if (__imgRegex.test(string)) {
+
+        return string.match(__imgRegex)[0];
+    }
     if(string.match('^http://')){
         string = string.replace("http://","https://")
         return string
     }
-   
-    var matches = string.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-    if (matches) {
-        return string
-    }
-    else {
-        var pattern = "(http(s?):)([/|.|\\w|\\s])*." + "(?:jpe?g|gif|png|JPG)";
-        var res = string.match(pattern);
-        if (res) {
-            return res[0]
-        }
-        else {
-            pattern = "(http(s?):\/\/.*\.(?:jpe?g|gif|png|JPG))";
-            res = string.match(pattern);
-            if (res) {
-                return res[0]
-            }
-        }
-    }}
+}
 
     function cleanText(text){
         if (!text) return text;
