@@ -109,7 +109,7 @@ function getProjectHTML(author, permlink, cb) {
         html += '<h1>'+project.title+'</h1>'
         html += '<h2>Author: '+project.author+'</h2>'
         html += '<h2>Date: '+project.created.split('T')[0]+'</h2>'
-        html += '<p><strong>Description: </strong>'+ cleanText(project.body)+'</p>'
+        html += '<p><strong>Description: </strong>'+ project.body+'</p>'
 
         var url = rootDomain+'/#!/'+project.author+'/'+project.permlink
         var snap = getThumbnail(project.body)
@@ -123,6 +123,8 @@ function parseProject(project, isComment) {
     newProject.author = project.author
     newProject.title = project.title
     newProject.body = cleanText(project.body)
+    if(project.basic.description)
+    newProject.body = cleanText(project.basic.description)
     newProject.total_payout_value = project.total_payout_value
     newProject.curator_payout_value = project.curator_payout_value
     newProject.pending_payout_value = project.pending_payout_value
